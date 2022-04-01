@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ApodEntity" representedClassName=".ApodEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="apodImage" optional="YES" attributeType="Binary"/>
+        <attribute name="copyright" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="String"/>
+        <attribute name="explanation" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UsersEntity" inverseName="favoritesApod" inverseEntity="UsersEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="title"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="UsersEntity" representedClassName=".UsersEntity" syncable="YES" codeGenerationType="category">
+        <attribute name="emailAddress" optional="YES" attributeType="String"/>
+        <attribute name="firstName" optional="YES" attributeType="String"/>
+        <attribute name="lastName" optional="YES" attributeType="String"/>
+        <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="userName" optional="YES" attributeType="String"/>
+        <relationship name="favoritesApod" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ApodEntity" inverseName="users" inverseEntity="ApodEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="userName"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <elements>
+        <element name="ApodEntity" positionX="-63" positionY="18" width="128" height="134"/>
+        <element name="UsersEntity" positionX="-63" positionY="-18" width="128" height="119"/>
+    </elements>
+</model>
