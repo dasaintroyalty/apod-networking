@@ -60,7 +60,7 @@ struct AuthenticationView: View {
                                                 }
                                             }
                         
-                                        TextField("password", text: $password)
+                                        SecureField("password", text: $password)
                                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                     }
                     VStack{
