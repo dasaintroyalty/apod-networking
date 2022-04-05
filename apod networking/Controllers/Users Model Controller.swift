@@ -10,6 +10,7 @@ import CoreData
 import SwiftUI
 import Combine
 
+//the userclass manager for persisting changes to core data
 class UsersManager {
     
     static let shared = UsersManager()
@@ -31,7 +32,7 @@ class UsersManager {
         
     }
     
-    
+//   the save method to persist changes to core data
     func save () {
         
      
@@ -68,6 +69,8 @@ class UsersController: ObservableObject {
         fetchApods()
     }
     
+//    method to fetch all usersentity stored in core data
+    
     func fetchUsers () {
         
         let fetchQuery = NSFetchRequest<UsersEntity>(entityName: "UsersEntity")
@@ -82,6 +85,8 @@ class UsersController: ObservableObject {
         }
         
     }
+    
+//    method to fetch all apodsentity stored in core data
     
     func fetchApods () {
         
@@ -99,7 +104,7 @@ class UsersController: ObservableObject {
         
     }
     
-    
+//    method to create a userentity object and persisting to core data
     func createUser (firstName:String, lastName:String, userName:String, emailAddress:String, password:String) {
         
         let newUser = UsersEntity(context: manager.userViewContext)
@@ -112,6 +117,7 @@ class UsersController: ObservableObject {
         fetchUsers()
     }
     
+//    method to delete users entity persisted in core data and persisting changes made
     func deleteUser (at offsets: IndexSet) {
         
             offsets.forEach { Index in

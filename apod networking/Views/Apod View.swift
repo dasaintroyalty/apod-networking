@@ -9,7 +9,118 @@
 import SwiftUI
 
 
+
 struct ApodView: View {
+
+    
+    var body: some View{
+        
+        NavigationView{
+            
+                CustomScrollView {
+                    ApodContentView()
+                }
+            
+        }
+        .tabItem{
+            Text("Home")
+          }
+    }
+}
+
+
+
+
+struct CustomScrollView <Content>: View where Content:View {
+   
+    @EnvironmentObject var vm: ApodDataService
+    
+    let refreshingViewBackColor: Color
+    let threshold: CGFloat
+    let content: () -> Content
+    
+    @State private var offfset: CGFloat = 0
+
+    @State var reload = false
+    
+    init(refreshingViewBackColor: Color = defaultRefreshingViewBackColor,
+         threshold: CGFloat = defaultRefreshThreshold,
+         @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.refreshingViewBackColor = refreshingViewBackColor
+        self.threshold = threshold
+        self.content = content
+    }
+    
+    
+    
+    var body: some View {
+            
+            ScrollView {
+                
+                ZStack (alignment: .top) {
+                    
+                    CustomScrollingIndicator(type: .dynamic)
+                        .frame(height:0)
+                    
+                    content()
+                        .alignmentGuide(VerticalAlignment.top) { d in
+//                            (vm.state == .refreshing) ? -threshold + offfset : 0
+                            d[.top]
+                        }
+                    
+                }
+                
+            }
+            .background(CustomScrollingIndicator(type: .fixed))
+            .onPreferenceChange(ScrollingPreferenceKey.self) { allValues in
+                let fixedY = allValues.last { $0.type == .fixed }?.yAxis ?? 0.0
+                let dynamicY = allValues.last { $0.type == .dynamic }?.yAxis ?? 0.0
+                
+                offfset = dynamicY - fixedY
+                
+                if vm.state != .refreshing {
+                        
+                    if offfset > threshold && vm.state == .waiting {
+                            DispatchQueue.main.async {
+                                vm.state = .primed }
+                        }
+                        
+                    else if offfset < threshold && vm.state == .primed {
+                            
+                        vm.state = .refreshing
+                        vm.error = nil
+                        
+                                    DispatchQueue.global(qos: .background).async {
+                                        
+                                                    vm.refreshingRequest { }
+                                        
+                                                   }
+                                    }
+                    
+                        }
+                
+               }
+            .navigationTitle("APOD")
+            .navigationBarTitleDisplayMode(.inline)
+            .overlay(alignment: .center)  {
+                
+                  if vm.error != nil {
+                                ErrorView(error: $vm.error)
+                      }
+                  }
+            .refreshable{
+                vm.error = nil
+                vm.dynamicRequest()
+                reload = true
+              }
+        }
+    }
+
+
+
+
+struct ApodContentView: View {
     
     @EnvironmentObject var users: UsersController
     @EnvironmentObject var active: ActiveUserController
@@ -22,11 +133,10 @@ struct ApodView: View {
     
     var body: some View {
         
-        NavigationView{
-            ScrollView{
-                VStack {
-                    HStack{
-                        DatePicker("From", selection: $vm.startingFrom , in: rangeToStartFrom...rangeToEndWith, displayedComponents: [.date])
+            VStack {
+                
+                HStack{
+                    DatePicker("From", selection: $vm.startingFrom , in: rangeToStartFrom...rangeToEndWith, displayedComponents: [.date])
                         
                         DatePicker("To", selection: $vm.endingAt , in: rangeToStartFrom...rangeToEndWith, displayedComponents: [.date])
                         
@@ -36,51 +146,41 @@ struct ApodView: View {
                         reload = true
                         }
                             label:{
-                               Text("Load")
-                                }
-                    }
+                                Text("Load")
+                                            .frame(width: 35, height: 20)
+                                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                            .background(RoundedRectangle(cornerRadius: 5).stroke(Color.gray, lineWidth: 2))
+                                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                                            
+                                 }
+                    
+                    }.lineLimit(1)
+                     .minimumScaleFactor(0.3)
                   
-                    VStack{
-                        
-                        if vm.fetching && !vm.displaying {
+                if vm.fetching && !vm.displaying {
                            
                             ProgressView()
                             
                         }
                         
-                        LazyVStack{
-                            ForEach (vm.allApodContents, id:\.id) { apod in
+                LazyVStack{
+                            
+                        ForEach (vm.allApodContents, id:\.id) { apod in
                                 
-                               EachApodView(apod: apod)
+                                    EachApodView(apod: apod)
                                 
+                                   }
                           }
-                        }
-                        
-                    }
-                }
-                
-            }.overlay(alignment: .center)
-            {
-              if vm.error != nil {
-                            ErrorView(error: $vm.error)
                   }
-              }
+               
+         }
+ }
 
-            
-        }.refreshable{
-            vm.error = nil
-            vm.dynamicRequest()
-            reload = true
-            }
-        .tabItem{
-            Text("Home")
-          }
-    }
 
-}
 
 
 struct EachApodView : View {
+    
     @EnvironmentObject var vm: ApodDataService
     @EnvironmentObject var activeUser : ActiveUserController
     
@@ -121,12 +221,12 @@ struct EachApodView : View {
                 NavigationLink(destination: SecondView(apod: apod),isActive: $toFullView, label: {EmptyView()})
                 
                 
-            }.padding(EdgeInsets(top: 5, leading: 5, bottom: 10, trailing: 5))
-          .background(RoundedRectangle(cornerRadius: 5).stroke(Color.gray, lineWidth: 2))
-          .padding(EdgeInsets(top: 5, leading: 5, bottom: 10, trailing: 5))
-          .onTapGesture{
-              toFullView.toggle()
-          }
+             }.padding(EdgeInsets(top: 5, leading: 5, bottom: 10, trailing: 5))
+              .background(RoundedRectangle(cornerRadius: 5).stroke(Color.gray, lineWidth: 2))
+              .padding(EdgeInsets(top: 5, leading: 5, bottom: 10, trailing: 5))
+              .onTapGesture{
+                  toFullView.toggle()
+              }
             
     }
 }
@@ -155,7 +255,7 @@ struct SecondView: View {
                 HStack{
                     Spacer()
                     Text(apod.date)
-                }
+                 }
                 
             }.navigationTitle(apod.title)
         }
@@ -169,27 +269,33 @@ struct SecondView: View {
 
 struct ErrorView: View {
    
+    @EnvironmentObject var vm: ApodDataService
     @Binding var error: Error?
+
     
     var body: some View{
         
         VStack {
           
             if let error = error {
+                
                    Text(error.localizedDescription).bold()
                 
                     Button{
                         self.error = nil
-                    }
+                        vm.displaying = true
+                        vm.state = .waiting
+                        
+                     }
                         label:{
                               Text("dismiss")
                             }
+         
+                   RefreshButton(error: $error)
                 
-                    RefreshButton(error: $error)
-                
+ 
             }
         }
-        
     }
 }
 
@@ -207,12 +313,11 @@ struct RefreshButton: View {
     var body: some View {
        
         VStack{
-            if let action = action {
-                
+                 
                 Button(
                     action:{
-    //                    refreshAction.isPerforming = true
-                         refreshAction.perform(action)
+                        if let action = action {
+                            refreshAction.perform(action) }
                     },
                     label:{
                        VStack{
@@ -225,11 +330,13 @@ struct RefreshButton: View {
                         }
                     }
                 ).disabled(refreshAction.isPerforming)
-            }
+
         }
         
     }
-}
+ }
+
+
 
 
 
@@ -244,6 +351,4 @@ struct RefreshButton: View {
 //                                .offset(y: vm.count == 3 ? -20 : 0)
 //                        }.frame(width: 100)
 //                        .foregroundColor(.gray)
-
-
 

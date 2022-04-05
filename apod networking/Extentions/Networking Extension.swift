@@ -16,7 +16,7 @@ extension ApodDataService {
 
 
 
-
+//the fetching of image from apod server function
 func fetchImage (with url: URL) async  -> UIImage? {
    
     do {
@@ -32,9 +32,9 @@ func fetchImage (with url: URL) async  -> UIImage? {
 
 
 
+//thus method uses async method of urlsession to dynamically download data from apod server
 
-
-func dataTaskPublisher (url: URL) async throws -> ApodServer {
+func dataData (url: URL) async throws -> ApodServer {
     let decoder = JSONDecoder()
     let (data, response) = try await URLSession.shared.data(from: url)
     guard let response = response as? HTTPURLResponse,
@@ -52,7 +52,7 @@ func dataTaskPublisher (url: URL) async throws -> ApodServer {
 }
 
 
-
+//method to transfer the date unput query to an appropriate query date for the urlsession task
 func getDateInput () -> (ProgramDate, ProgramDate) {
     
     let startingDate = (Calendar.current.dateComponents([.year, .month, .day], from: startingFrom))
@@ -67,7 +67,7 @@ func getDateInput () -> (ProgramDate, ProgramDate) {
     let endingDateYear = endingDate.value(for: .year)
     let endingDateMonth = endingDate.value(for: .month)
     let endingDateDay = endingDate.value(for: .day)
-    
+   
     let apodEndingDate = ProgramDate(year: endingDateYear ?? 2022, month: endingDateMonth ?? 3, day: endingDateDay ?? 20)
    print("are you reaching here")
     
@@ -75,6 +75,7 @@ func getDateInput () -> (ProgramDate, ProgramDate) {
     
 }
 
+//    this method create a url instance from a date component
 func createUrl(eachDateComponent: String) -> URLComponents {
     
     var urlcomponents = URLComponents(string: "https://api.nasa.gov")!

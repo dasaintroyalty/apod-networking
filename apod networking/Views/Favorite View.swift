@@ -31,34 +31,35 @@ struct ThirdTab: View {
             
             else {
                 ZStack{
-                Text("you need to be authenticated")
+                    
+                    Text("you need to be authenticated")
                 
                     AuthenticationView(showChevron: true)
-                    .offset(y: authStartingOffset)
-                    .offset(y: authChangedOffset)
-                    .offset(y: authEndedOffset)
-                    .gesture(
-                       DragGesture()
-                        .onChanged{ value in
-                            authChangedOffset = value.translation.height
-                        }
-                        .onEnded{ value in
-//                            withAnimation(.easeInOut) {
-                                
-                                if authChangedOffset < -150 {
-                                    authStartingOffset = UIScreen.main.bounds.height * 0.15
-                                    activeUser.chevronTitle = "chevron.down"
-                                }
-                                else {
-                                    authStartingOffset = UIScreen.main.bounds.height * 0.75
-                                    activeUser.chevronTitle = "chevron.up"
-                                }
-//                            }
-                           authEndedOffset = -authChangedOffset
-                        }
-                    
-                    )
-                    
+                                    .offset(y: authStartingOffset)
+                                    .offset(y: authChangedOffset)
+                                    .offset(y: authEndedOffset)
+                                    .gesture(
+                                       DragGesture()
+                                        .onChanged{ value in
+                                            authChangedOffset = value.translation.height
+                                        }
+                                        .onEnded{ value in
+                //                            withAnimation(.easeInOut) {
+                                                
+                                                if authChangedOffset < -150 {
+                                                    authStartingOffset = UIScreen.main.bounds.height * 0.15
+                                                    activeUser.chevronTitle = "chevron.down"
+                                                }
+                                                else {
+                                                    authStartingOffset = UIScreen.main.bounds.height * 0.75
+                                                    activeUser.chevronTitle = "chevron.up"
+                                                }
+                //                            }
+                                           authEndedOffset = -authChangedOffset
+                                        }
+                                    
+                                    )
+                                    
                     Spacer()
             }
             }
@@ -99,11 +100,12 @@ struct FavoriteView: View {
        NavigationView {
            
                ZStack{
-                ScrollView(.vertical, showsIndicators: false){
-          
-                    favoriteApod
-                    
-                   }
+                   
+                    ScrollView(.vertical, showsIndicators: false) {
+                        
+                        favoriteApod
+                        
+                       }
                    
                    LogOutView()
                        .offset(y: LogOutStartingOffset)
@@ -130,34 +132,35 @@ struct FavoriteView: View {
                    
                 
                }.navigationTitle(navTitle)
-                   .navigationBarTitleDisplayMode(.inline)
-                        .coordinateSpace(name: "parent")
-                        .toolbar{
-                            ToolbarItem(placement: .navigationBarTrailing) {
-                                Button{
-                                    if !toggle {
-                                        withAnimation(.easeIn(duration: 1.0)) {
-                                        LogOutStartingOffset = (UIScreen.main.bounds.height * 0.70)
-                                        descriptionOpacity = 0.2
-                                        }
-                                        toggle = true
-                                      
+                .navigationBarTitleDisplayMode(.inline)
+                .coordinateSpace(name: "parent")
+                .toolbar{
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button{
+                                if !toggle {
+                                    withAnimation(.easeIn(duration: 1.0)) {
+                                    LogOutStartingOffset = (UIScreen.main.bounds.height * 0.70)
+                                    descriptionOpacity = 0.2
                                     }
-                                    else  {
-                                        withAnimation(.spring(response: 1.5, dampingFraction: 2, blendDuration: 1)) {
-                                            LogOutStartingOffset = UIScreen.main.bounds.height
-                                            descriptionOpacity = 1.0
-                                        }
-                                        toggle = false
+                                    toggle = true
+                                  
+                                }
+                                else  {
+                                    withAnimation(.spring(response: 1.5, dampingFraction: 2, blendDuration: 1)) {
+                                        LogOutStartingOffset = UIScreen.main.bounds.height
+                                        descriptionOpacity = 1.0
                                     }
-                                   }
-                                    label:{
-                                        Image(systemName: "person.crop.circle.fill.badge.xmark")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                    }
-                            }
+                                    toggle = false
+                                }
+                               }
+                                label:{
+                                    Image(systemName: "person.crop.circle.fill.badge.xmark")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                }
+                           }
                         }
+           
            }.onAppear{
                changeview.toggle()
            }
@@ -179,33 +182,36 @@ extension FavoriteView {
         VStack{
             ScrollView(.horizontal, showsIndicators: false) {
 
-                LazyHStack(alignment:.top){
-                    ForEach(activeUser.favorites, id:\.self) { favorite in
+                        LazyHStack(alignment:.top){
+                            
+                            ForEach(activeUser.favorites, id:\.self) { favorite in
 
-                        GeometryReader{ geometry in
+                                GeometryReader{ geometry in
 
-                            Image(uiImage: UIImage(data:favorite.apodImage ?? activeUser.defaultImageData)!).resizable()
-                                                              .scaledToFill()
-                                                              .frame(maxWidth: UIScreen.main.bounds.width * 0.97)
-                                                              .frame(minHeight: UIScreen.main.bounds.width)
-                                                              .clipped()
-                                                              .overlay{
-                                                                  Text(favorite.title ?? "")
-                                                              }
+                                    Image(uiImage: UIImage(data:favorite.apodImage ?? activeUser.defaultImageData)!).resizable()
+                                                                      .scaledToFill()
+                                                                      .frame(maxWidth: UIScreen.main.bounds.width * 0.97)
+                                                                      .frame(minHeight: UIScreen.main.bounds.width)
+                                                                      .clipped()
+                                                                      .overlay{
+                                                                          Text(favorite.title ?? "")
+                                                                      }
 
-                                                            .onReceive(timer, perform: { _ in
-                                                                updateTitle(proxy: geometry, apod: favorite)
-                                                                          })
+                                                                      .onReceive(timer, perform: { _ in
+                                                                        updateTitle(proxy: geometry, apod: favorite)
+                                                                                  })
 
-                    }.padding(.leading, 5)
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+                            }.padding(.leading, 5)
+                             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
 
-                    }
-                }
+                            }
+                        }
             }
    
             VStack{
+                
                 Text(description).opacity(descriptionOpacity)
+                
             }.padding(.leading, 5)
              .padding(.trailing, 5)
 
@@ -215,6 +221,7 @@ extension FavoriteView {
     }
     
     
+//   this method update the title and description of the apod content being displayed on screen
     
     func updateTitle (proxy:GeometryProxy, apod:ApodEntity ) {
       
@@ -227,13 +234,6 @@ extension FavoriteView {
         
      }
 
-    
-    func alterCurrentOffset () -> CGFloat {
-        guard abs(currentLogoutDragOffset) <= abs(LogOutStartingOffset)  else  {
-            return LogOutStartingOffset
-        }
-        return currentLogoutDragOffset
-    }
     
     
     

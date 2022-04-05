@@ -48,7 +48,7 @@ class ActiveUserController: ObservableObject {
     
    
 
-    
+// this method was not later used but might still be included    hence, the commented implementation
     private func addSubscriber () {
         
 //    DispatchQueue.main.async {[weak self] in
@@ -71,6 +71,7 @@ class ActiveUserController: ObservableObject {
         userIsActive = value
     }
     
+//    method to save/delete the userinfo to the user device using userdefaults
     func saveActiveUserInfo () {
         guard let activeUser = activeUser else {
             UserDefaults.standard.set(nil, forKey: Self.saveUserActive)
@@ -84,7 +85,7 @@ class ActiveUserController: ObservableObject {
     }
     
    
-    
+//    method to get the activeuserinfo from userdefaults
     func activeUserInfo () {
         
         let decoder = JSONDecoder()
@@ -114,6 +115,7 @@ class ActiveUserController: ObservableObject {
 
     }
     
+//    this method obtain the bollean value from the userisactive property
     func userActive () -> Bool {
         
         if userIsActive ?? false {
