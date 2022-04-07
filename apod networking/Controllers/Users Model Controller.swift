@@ -61,7 +61,8 @@ class UsersController: ObservableObject {
     
     @Published var allUsers: [UsersEntity] = []
     @Published var allApods: [ApodEntity] = []
-    
+    var allDynamicApods: [ApodEntity] = []
+    var allApodsCopy: [ApodEntity] = []
    
     init() {
         
@@ -96,6 +97,7 @@ class UsersController: ObservableObject {
             let fetchedApods = try manager.userViewContext.fetch(fetchQuery)
             allApods.removeAll()
             allApods = fetchedApods
+            allApodsCopy = fetchedApods
             print("there are \(fetchedApods.count) apods now")
         }
         catch let error  {

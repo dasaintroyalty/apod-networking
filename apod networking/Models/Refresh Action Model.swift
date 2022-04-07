@@ -61,42 +61,21 @@ class RefreshingAction: ObservableObject {
 }
 
 
-// the scrolling view preference key struct
-
- struct ScrollingPreferenceKey: PreferenceKey {
-
-    typealias Value = [ScrollingPosition]
-    
-    static var defaultValue = [ScrollingPosition]()
-    
-    static func reduce(value: inout [ScrollingPosition], nextValue: () -> [ScrollingPosition]) {
-        value.append(contentsOf: nextValue())
-    }
-    
-}
-
-
-// the customscrollingindicator view that would always report a value for the scrollingpreference key
- struct CustomScrollingIndicator: View {
-   
-    let type: ScrollingType
-    
-    var body: some View {
-        GeometryReader { proxy in
-            
-            Color.clear
-                .preference(key: ScrollingPreferenceKey.self, value: [ScrollingPosition(type: type, yAxis: proxy.frame(in: .global).minY)])
-        }
-    }
-    
-}
-
-
 //enumeration to track the state of the refreshing action
 enum RefreshState {
     case waiting, primed, refreshing
 }
 
+
+
+    enum VanishState {
+        case waiting
+        case dragging
+        case primed
+        case vanished
+        case showing
+}
+    
 
 public typealias FinishedRefreshing = () -> Void
 
@@ -104,3 +83,5 @@ public typealias FinishedRefreshing = () -> Void
 public let defaultRefreshingViewBackColor = Color(UIColor.systemBackground)
 
 public let defaultRefreshThreshold: CGFloat = 60
+
+public let defaultVanishThreshold: CGFloat = 170

@@ -31,94 +31,10 @@ struct ApodView: View {
 
 
 
-struct CustomScrollView <Content>: View where Content:View {
-   
-    @EnvironmentObject var vm: ApodDataService
-    
-    let refreshingViewBackColor: Color
-    let threshold: CGFloat
-    let content: () -> Content
-    
-    @State private var offfset: CGFloat = 0
-
-    @State var reload = false
-    
-    init(refreshingViewBackColor: Color = defaultRefreshingViewBackColor,
-         threshold: CGFloat = defaultRefreshThreshold,
-         @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.refreshingViewBackColor = refreshingViewBackColor
-        self.threshold = threshold
-        self.content = content
-    }
-    
-    
-    
-    var body: some View {
-            
-            ScrollView {
-                
-                ZStack (alignment: .top) {
-                    
-                    CustomScrollingIndicator(type: .dynamic)
-                        .frame(height:0)
-                    
-                    content()
-                        .alignmentGuide(VerticalAlignment.top) { d in
-//                            (vm.state == .refreshing) ? -threshold + offfset : 0
-                            d[.top]
-                        }
-                    
-                }
-                
-            }
-            .background(CustomScrollingIndicator(type: .fixed))
-            .onPreferenceChange(ScrollingPreferenceKey.self) { allValues in
-                let fixedY = allValues.last { $0.type == .fixed }?.yAxis ?? 0.0
-                let dynamicY = allValues.last { $0.type == .dynamic }?.yAxis ?? 0.0
-                
-                offfset = dynamicY - fixedY
-                
-                if vm.state != .refreshing {
-                        
-                    if offfset > threshold && vm.state == .waiting {
-                            DispatchQueue.main.async {
-                                vm.state = .primed }
-                        }
-                        
-                    else if offfset < threshold && vm.state == .primed {
-                            
-                        vm.state = .refreshing
-                        vm.error = nil
-                        
-                                    DispatchQueue.global(qos: .background).async {
-                                        
-                                                    vm.refreshingRequest { }
-                                        
-                                                   }
-                                    }
-                    
-                        }
-                
-               }
-            .navigationTitle("APOD")
-            .navigationBarTitleDisplayMode(.inline)
-            .overlay(alignment: .center)  {
-                
-                  if vm.error != nil {
-                                ErrorView(error: $vm.error)
-                      }
-                  }
-            .refreshable{
-                vm.error = nil
-                vm.dynamicRequest()
-                reload = true
-              }
-        }
-    }
 
 
 
+//the content view that is drawn on screen by the customscrollview
 
 struct ApodContentView: View {
     
@@ -178,6 +94,7 @@ struct ApodContentView: View {
 
 
 
+//the view of each apods fetched from apod server
 
 struct EachApodView : View {
     
@@ -234,6 +151,7 @@ struct EachApodView : View {
 
 
 
+//the detailed view for each apod
 
 struct SecondView: View {
     

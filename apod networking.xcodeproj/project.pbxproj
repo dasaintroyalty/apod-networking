@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D6134DCA27FE459400F925A7 /* Custom Scroll View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6134DC927FE459400F925A7 /* Custom Scroll View.swift */; };
+		D6134DCC27FE45A400F925A7 /* Vanish Scroll View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6134DCB27FE45A400F925A7 /* Vanish Scroll View.swift */; };
+		D6134DCE27FE475100F925A7 /* Sorting Apod View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6134DCD27FE475100F925A7 /* Sorting Apod View.swift */; };
+		D67068E127FF15A60085E174 /* Preference Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = D67068E027FF15A60085E174 /* Preference Keys.swift */; };
 		D6908D1127F4FC91009DB546 /* Apod Created View.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6908D1027F4FC91009DB546 /* Apod Created View.swift */; };
 		D69D1D0127F446B700CBC92C /* Refresh Action Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69D1D0027F446B700CBC92C /* Refresh Action Model.swift */; };
 		D6AE739027EDE484001F7B6C /* apod_networkingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AE738F27EDE484001F7B6C /* apod_networkingApp.swift */; };
@@ -28,6 +32,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D6134DC927FE459400F925A7 /* Custom Scroll View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Custom Scroll View.swift"; sourceTree = "<group>"; };
+		D6134DCB27FE45A400F925A7 /* Vanish Scroll View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Vanish Scroll View.swift"; sourceTree = "<group>"; };
+		D6134DCD27FE475100F925A7 /* Sorting Apod View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sorting Apod View.swift"; sourceTree = "<group>"; };
+		D67068E027FF15A60085E174 /* Preference Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Preference Keys.swift"; sourceTree = "<group>"; };
 		D6908D1027F4FC91009DB546 /* Apod Created View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Apod Created View.swift"; sourceTree = "<group>"; };
 		D69D1D0027F446B700CBC92C /* Refresh Action Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refresh Action Model.swift"; sourceTree = "<group>"; };
 		D6AE738C27EDE484001F7B6C /* apod networking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "apod networking.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +68,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D67068E227FF191F0085E174 /* First Tab */ = {
+			isa = PBXGroup;
+			children = (
+				D6AE73A327EDE94B001F7B6C /* Apod View.swift */,
+				D6134DC927FE459400F925A7 /* Custom Scroll View.swift */,
+			);
+			path = "First Tab";
+			sourceTree = "<group>";
+		};
+		D67068E327FF19360085E174 /* Second Tab */ = {
+			isa = PBXGroup;
+			children = (
+				D6908D1027F4FC91009DB546 /* Apod Created View.swift */,
+				D6134DCD27FE475100F925A7 /* Sorting Apod View.swift */,
+				D6134DCB27FE45A400F925A7 /* Vanish Scroll View.swift */,
+			);
+			name = "Second Tab";
+			path = "apod networking/Views/Second Tab";
+			sourceTree = SOURCE_ROOT;
+		};
+		D67068E427FF194C0085E174 /* Third Tab */ = {
+			isa = PBXGroup;
+			children = (
+				D6AE73A727EDE9AB001F7B6C /* Favorite View.swift */,
+			);
+			name = "Third Tab";
+			path = "apod networking/Views/Third Tab";
+			sourceTree = SOURCE_ROOT;
+		};
 		D6AE738327EDE484001F7B6C = {
 			isa = PBXGroup;
 			children = (
@@ -112,11 +149,12 @@
 		D6B580E827F6685300373224 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D6AE73A127EDE8E8001F7B6C /* Home View.swift */,
 				D6AE73A527EDE988001F7B6C /* Authentication View.swift */,
-				D6AE73A327EDE94B001F7B6C /* Apod View.swift */,
-				D6908D1027F4FC91009DB546 /* Apod Created View.swift */,
-				D6AE73A727EDE9AB001F7B6C /* Favorite View.swift */,
+				D6AE73A127EDE8E8001F7B6C /* Home View.swift */,
+				D67068E027FF15A60085E174 /* Preference Keys.swift */,
+				D67068E227FF191F0085E174 /* First Tab */,
+				D67068E327FF19360085E174 /* Second Tab */,
+				D67068E427FF194C0085E174 /* Third Tab */,
 			);
 			name = Views;
 			path = "apod networking/Views";
@@ -227,8 +265,12 @@
 				D6B580E427F6660400373224 /* ActiveUser ViewController.swift in Sources */,
 				D69D1D0127F446B700CBC92C /* Refresh Action Model.swift in Sources */,
 				D6AE739027EDE484001F7B6C /* apod_networkingApp.swift in Sources */,
+				D6134DCC27FE45A400F925A7 /* Vanish Scroll View.swift in Sources */,
+				D67068E127FF15A60085E174 /* Preference Keys.swift in Sources */,
 				D6B580E627F6678D00373224 /* Active User Extension.swift in Sources */,
 				D6AE73A227EDE8E8001F7B6C /* Home View.swift in Sources */,
+				D6134DCE27FE475100F925A7 /* Sorting Apod View.swift in Sources */,
+				D6134DCA27FE459400F925A7 /* Custom Scroll View.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

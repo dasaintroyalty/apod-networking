@@ -25,10 +25,12 @@ class ActiveUserController: ObservableObject {
     let allUsers = UsersController.shared
     let dowloadApod = ApodDataService()
     
-    @Published var allDownloadedApods:[ApodServer] = []
+    @Published var filteredApods:[ApodEntity] = []
     @Published var favorites: [ApodEntity] = []
     
-    private var  cancellables: AnyCancellable?
+    @Published var apodCreatedSearch = ""
+    
+    private var  cancellables = Set<AnyCancellable>()
     
     let defaultImage = UIImage(systemName: "photo.on.rectangle")!
     
@@ -40,7 +42,6 @@ class ActiveUserController: ObservableObject {
     @Published var chevronTitle:String = "chevron.up"
     
     init () {
-        self.allDownloadedApods = []
         activeUserInfo()
         favoritesApod()
         self.addSubscriber()
@@ -51,18 +52,20 @@ class ActiveUserController: ObservableObject {
 // this method was not later used but might still be included    hence, the commented implementation
     private func addSubscriber () {
         
-//    DispatchQueue.main.async {[weak self] in
-//
-//        self?.cancellables = self?.dowloadApod.$allApodContents
-//                .receive(on: DispatchQueue.main)
-//                .sink { [weak self]dowloadedApods in
-//                    print("recieving")
-//                    print("\(dowloadedApods)")
-//                    self?.allDownloadedApods = dowloadedApods
-//                }
-//        }
-
-            
+      $apodCreatedSearch
+            .combineLatest(allUsers.$allApods)
+            .map { (searchedtext, apodentities) -> [ApodEntity] in
+                guard !searchedtext.isEmpty else { return apodentities }
+                
+                let lowercasedtext = searchedtext.lowercased()
+               return apodentities.filter { apod -> Bool in
+                   apod.title?.lowercased().contains(lowercasedtext) ?? false
+                }
+            }
+            .sink {[weak self] filteredapodentities in
+                self?.filteredApods = filteredapodentities
+            }
+            .store(in: &cancellables)
     }
     
     

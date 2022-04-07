@@ -9,31 +9,29 @@ import SwiftUI
 
 
 
-
-
 struct ApodCreatedView: View {
     
     @EnvironmentObject var activeUser : ActiveUserController
     @EnvironmentObject var users: UsersController
     
+    @State var scrollToTop = 0
+    
     var body: some View {
       
         NavigationView{
-            ScrollView{
-                LazyVStack{
-                    
-                    ForEach (users.allApods, id:\.self) { apod in
-                        
-                       EachApodCreatedView(apod: apod)
-                        
-                  }
-                    
-                }
-            }.navigationTitle("Astronomy Picture Of The day")
-            .navigationBarTitleDisplayMode(.inline)
-        }.tabItem {
+            VStack{
+               
+                VanishScrollView(content: {
+                    AllApodView(scrollToTop: $scrollToTop)
+                }, scrollToTop: $scrollToTop)
+                
+        }
+            
+        }.searchable(text: $activeUser.apodCreatedSearch, prompt: "Search apods")
+         .tabItem {
             Text("APODS")
         }
+         
         
     }
     
@@ -41,6 +39,73 @@ struct ApodCreatedView: View {
 
 
 
+
+struct AllApodView : View {
+    
+    @EnvironmentObject var activeUser : ActiveUserController
+    @EnvironmentObject var users: UsersController
+    
+    @Environment(\.isSearching) var isSearching
+    
+    @State var showSortingAlert: Bool = false
+    @Binding var scrollToTop: Int
+    
+    var body: some View {
+        
+        LazyVStack{
+
+                HStack {
+                    Image(systemName: "shuffle")
+                        .onTapGesture {
+                            users.allDynamicApods = users.allApods.shuffled()
+                            users.allApods = users.allDynamicApods
+                        }
+                    Spacer()
+                    
+                    Image(systemName: "slider.horizontal.3")
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                showSortingAlert.toggle()
+                            }
+                        }
+                    
+                }.padding(EdgeInsets(top: 5, leading: 5, bottom: 10, trailing: 5))
+        
+
+            SortingApodView()
+                .frame(maxHeight: showSortingAlert ? .infinity : 0)
+                .opacity(showSortingAlert ? 1.0 : 0)
+            ScrollViewReader { proxy in
+                
+                ForEach (users.allApods, id:\.self) { apod in
+                    
+                        EachApodCreatedView(apod: apod)
+                        .id((users.allApods.firstIndex(of: apod) ?? 0) + 1)
+                    
+                }.onChange(of: scrollToTop) { newValue in
+                    if newValue == 1 {
+                        withAnimation(.spring()) {
+                            proxy.scrollTo(newValue, anchor: .center) }
+                        }
+                       
+                }
+                
+            }
+           
+            
+            
+            
+        }.opacity(activeUser.apodCreatedSearch.isEmpty ? 1.0 : 0.2)
+         .overlay{
+            if isSearching && !activeUser.apodCreatedSearch.isEmpty {
+                  SearchedApodView()
+                }
+            }
+        
+    }
+    
+   
+}
 
 
 struct EachApodCreatedView: View {
@@ -167,6 +232,68 @@ struct ApodCreatedSecondView: View {
         }
     }
 }
+
+
+
+
+struct SearchedApodView : View {
+    
+    @EnvironmentObject var users: UsersController
+    @EnvironmentObject var activeUser : ActiveUserController
+    
+    
+    var body: some View {
+        
+        
+        ScrollView {
+            
+            VStack {
+                
+                ForEach (activeUser.filteredApods, id:\.self) {  apod in
+                    
+                    EachSearchedApod(apod: apod)
+                      
+                }
+            }.background(Color(UIColor.systemBackground))
+        }
+        
+    }
+}
+
+
+struct EachSearchedApod: View {
+    
+    var apod: ApodEntity
+    @EnvironmentObject var activeUser : ActiveUserController
+    @State var toFullView:Bool = false
+    
+    var body: some View {
+        
+        HStack {
+            Text(apod.title ?? "no tittle").bold()
+                .lineLimit(2)
+                .padding(.leading, 5)
+            Spacer()
+            Image(uiImage: UIImage(data: apod.apodImage ?? activeUser.defaultImageData)!).resizable()
+                .frame(width: 60, height: 60)
+                .scaledToFit()
+                .clipped()
+
+            NavigationLink(destination: ApodCreatedSecondView(apod: apod), isActive: $toFullView, label: { EmptyView()})
+            
+        }//.background(RoundedRectangle(cornerRadius: 5).stroke(Color.gray, lineWidth: 1))
+        .background(Color(UIColor.systemBackground))
+        .padding(.leading, 5)
+        .padding(.trailing, 5)
+        .onTapGesture {
+            toFullView.toggle()
+        }
+    }
+}
+
+
+
+
 
 
 //struct Apod_Created_View_Previews: PreviewProvider {

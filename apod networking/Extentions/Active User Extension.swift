@@ -76,9 +76,7 @@ extension ActiveUserController {
         newApod.id = vaildApod.id
 
         save()
-        print("how about after saving  whats wrong")
         allUsers.fetchApods()
-        reload.toggle()
         return
     }
 
@@ -92,7 +90,6 @@ extension ActiveUserController {
                 controller.userViewContext.delete(apodToDelete)
                 controller.save()
                 allUsers.fetchApods()
-                reload.toggle()
                 return
         }
 
