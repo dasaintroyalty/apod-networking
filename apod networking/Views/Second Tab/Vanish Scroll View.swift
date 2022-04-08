@@ -73,10 +73,10 @@ struct VanishScrollView <Content:View>: View  {
            let fixedY = allValues.last { $0.type == .fixed }?.yAxis ?? 0
            let dynamicY = allValues.last { $0.type == .dynamic }?.yAxis ?? 0
            
-           offset = fixedY - dynamicY
-           
-           vanishingMode()
-           
+           if dynamicY > 500 {
+               offset = fixedY - dynamicY
+               vanishingMode()
+           }
        }
        .onPreferenceChange(ContentPreferenceKey.self) { value in
            contentPosition = value.last ?? 0.0
@@ -109,8 +109,6 @@ struct VanishScrollView <Content:View>: View  {
                 vanishProgressOpacity = 1.0
                 vanishProgressText = "drag up to enter vanish mode"
                 state = .dragging
-            
-               
         }
         
         else if offset > threshold && state == .dragging  && viewState == "Showing"{
